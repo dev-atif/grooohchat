@@ -1,0 +1,51 @@
+# ==========================================
+# Python Virtual Environments & Dependencies
+# ==========================================
+.venv/
+venv/
+ENV/
+env/
+bin/
+lib/
+include/
+share/
+pyvenv.cfg
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+
+# ==========================================
+# Project Specific Caches (LangGraph / Streamlit)
+# ==========================================
+chat_caches/
+.streamlit/config.toml
+.streamlit/secrets.toml
+
+# ==========================================
+# Secrets, Environment Variables & Credentials
+# ==========================================
+.env
+.env.*
+*.pem
+*.key
+secrets.json
+
+# ==========================================
+# Databases & Persistent Storage Snapshots
+# ==========================================
+*.db
+*.sqlite
+*.sqlite3
+
+# ==========================================
+# Operating System Junk & IDEs
+# ==========================================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace

@@ -1,0 +1,174 @@
+/* =====================================================
+   CLEAN GRADIENT TITLE & TYPOGRAPHY STYLING
+   ===================================================== */
+.premium-header {
+    font-size: 2.25rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #E3FF00, #a3b800);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.025em;
+    margin-bottom: 4px;
+}
+
+.premium-caption {
+    color: #9ca3af;
+    font-size: 0.95rem;
+    margin-bottom: 32px;
+}
+
+/* =====================================================
+   CHAT AVATAR CONTAINER & ICON COLOR STYLING 
+   ===================================================== */
+div[data-testid="stChatMessageAvatar"] {
+    background-color: #0E1117 !important; 
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #FFFFFF !important;            
+    border-radius: 8px !important;
+}
+
+.st-emotion-cache-18qnold {
+    display: flex;
+    border: 1px solid rgb(49, 51, 63);
+    background-color: rgb(14, 17, 23);
+    color: #FFFFFF !important; 
+    line-height: 1;
+    font-size: 1rem;
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.5rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.st-emotion-cache-1ir3vnm {
+    margin: auto;
+    flex-grow: 1;
+    min-width: 0px;
+    color: black;
+}
+
+/* =====================================================
+   CHAT BUBBLE CONFIGURATION (USER VS ASSISTANT)
+   ===================================================== */
+div[data-testid="stChatMessage"] {
+    background-color: transparent !important;
+    border: none !important;
+    padding: 4px 0px !important;
+    margin-bottom: 12px;
+}
+
+/* Target User Container Specifically */
+div[data-testid="stChatMessage"]:has([aria-label="Chat message from user"]) div[data-testid="stChatMessageContent"] {
+    background-color: #ffffff !important;
+    border: 1px solid rgba(227, 255, 0, 0.15) !important;
+    border-radius: 25px !important;
+    padding: 14px !important;
+    color: #000000 !important;
+    transition: border-color 0.3s ease;
+}
+
+div[data-testid="stChatMessage"]:has([aria-label="Chat message from user"]):hover div[data-testid="stChatMessageContent"] {
+    border-color: rgba(227, 255, 0, 0.3) !important;
+}
+
+/* Clear Assistant Native Container Background Defaults */
+div[data-testid="stChatMessage"]:has([aria-label="Chat message from assistant"]) div[data-testid="stChatMessageContent"] {
+    background-color: transparent !important;
+    border: none !important;
+    padding: 0px !important;
+}
+
+/* ELECTRIC LIME/YELLOW ASSISTANT CONTAINER BUILD */
+.assistant-red-box {
+    background-color: #E3FF00 !important; 
+    border-radius: 25px;
+    padding: 14px;
+    color: black !important;            
+    box-shadow: 0 4px 12px rgba(153, 0, 0, 0.15);
+}
+
+/* Enforce Dark Typography Inside the Assistant Container Bubble */
+.assistant-red-box p, 
+.assistant-red-box div, 
+.assistant-red-box span, 
+.assistant-red-box li, 
+.assistant-red-box h1, 
+.assistant-red-box h2, 
+.assistant-red-box h3 {
+    color: black !important;
+}
+
+/* =====================================================
+   CUSTOMIZING STREAMLIT SPINNER & INPUT WORKspace
+   ===================================================== */
+div[data-testid="stSpinner"] i {
+    color: #E3FF00 !important;
+}
+
+div[data-testid="stChatInput"] {
+    border: 2px solid #E3FF00 !important;
+    border-radius: 10px !important;
+    box-shadow: none !important;
+}
+
+div[data-testid="stChatInput"] textarea {
+    background-color: transparent !important;
+    font-family: 'Inter', sans-serif !important;
+    box-shadow: none !important;
+    border: none !important;
+    color: black !important;
+}
+
+div[data-testid="stChatInput"] textarea:focus,
+div[data-testid="stChatInput"] textarea:active,
+div[data-testid="stChatInput"] *:focus,
+div[data-testid="stChatInput"] *:active,
+div[data-testid="stChatInput"] * {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+div[data-testid="stChatInput"] > div,
+div[data-testid="stChatInput"] div {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background-color: white;
+}
+
+div[data-testid="stChatInput"]:focus-within {
+    border-color: #E3FF00 !important;
+    box-shadow: 0 0 12px rgba(227, 255, 0, 0.25) !important;
+    outline: none !important;
+}
+
+div[data-testid="stChatInput"] textarea::placeholder {
+    color: black !important;
+}
+
+div[data-testid="stChatInput"] button {
+    color: black !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background-color: #E3FF00;
+}
+
+.stChatInputContainer div, 
+.stChatInputContainer textarea {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.st-emotion-cache-4rsbii {
+ 
+    background-color: rgb(0, 0, 0);
+}
+
+.st-emotion-cache-hzygls {
+   
+    background-color: rgb(0, 0, 0);
+    
+}

@@ -1,0 +1,11 @@
+langgraph
+langchain
+langchain-core
+langchain-openai
+langgraph-checkpoint-sqlite
+python-dotenv
+langchain-huggingface
+transformers
+torch
+Pydantic
+streamlit
