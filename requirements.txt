@@ -10,3 +10,7 @@ torch
 Pydantic
 streamlit
 langchain-pinecone
+
+sentence-transformers
+
+torchvision
