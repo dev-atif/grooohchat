@@ -1,26 +1,17 @@
-import json
-import os
-from typing import Literal, Optional
-from pydantic import BaseModel, Field
+import requests
+from typing import Literal
+from pydantic import BaseModel
 from langchain_core.tools import tool
 from langgraph.types import interrupt
 
+
 # =====================================================
-# DATA VALIDATION SCHEMA (DROPDOWN COMPLIANT)
+# SCHEMA
 # =====================================================
 class ContactInformationSchema(BaseModel):
-    name: str = Field(
-        ..., 
-        description="The full name of the user or main contact person."
-    )
-    company: str = Field(
-        ..., 
-        description="The company, business, or organization name."
-    )
-    email: str = Field(
-        ..., 
-        description="The validated primary email address of the client."
-    )
+    name: str
+    company: str
+    email: str
     interest: Literal[
         "Web App Development",
         "Andriod/Ios Application",
@@ -30,33 +21,30 @@ class ContactInformationSchema(BaseModel):
         "Landing Page",
         "Maintenance",
         "Consultation"
-    ] = Field(
-        ..., 
-        description="The primary project service category the user is interested in."
-    )
+    ]
     project_budget: Literal[
         "≤ $5K",
         "$5K-$10K",
         "$10K-$20K",
+        "$20K-$30K",
         "$20K-$30K",
         "$30K-$40K",
         "$40K-$50K",
         "$50K-$60K",
         "$60K-$100K",
         ">$100K"
-    ] = Field(
-        ..., 
-        description="The estimated project budget tiers chosen by the client."
-    )
-    project_details: str = Field(
-        ..., 
-        description="A descriptive summary outlining the project goals, features, or details provided by the user."
-    )
+    ]
+    project_details: str
+
 
 # =====================================================
-# DUMMY CONTACT INTAKE TOOL DEFINITION
+# TOOL
 # =====================================================
-@tool("submit_contact_form", args_schema=ContactInformationSchema)
+@tool(
+    "submit_contact_form",
+    args_schema=ContactInformationSchema,
+    description="Submit contact form lead to backend API after user confirmation."
+)
 def submit_contact_form(
     name: str,
     company: str,
@@ -65,60 +53,86 @@ def submit_contact_form(
     project_budget: str,
     project_details: str
 ) -> dict:
-    """
-    Submits a project inquiry lead and structured contact form data to the sales pipeline. 
-    Use this tool immediately whenever a user explicitly states they want to work with us, 
-    hire us, request a quote, or submit their project details.
-    """
-    # Package the incoming parsed information structured payload
-    form_payload = {
-        "client_name": name,
-        "company_name": company,
-        "client_email": email,
-        "service_requested": interest,
-        "budget_bracket": project_budget,
-        "project_description": project_details
+
+    # =================================================
+    # STEP 1: Build payload
+    # =================================================
+    payload = {
+        "name": name,
+        "company": company,
+        "email": email,
+        "interest": interest,
+        "budget": project_budget,
+        "message": project_details
     }
-    
-    # Create a beautifully formatted Markdown string showing the fields
-    review_message = (
-        f"Please review the contact form details below before submission:\n\n"
-        f"👤 **Name:** {name}\n"
-        f"🏢 **Company:** {company}\n"
-        f"📧 **Email:** {email}\n"
-        f"🛠️ **Service:** {interest}\n"
-        f"💰 **Budget:** {project_budget}\n"
-        f"📝 **Description:** {project_details}\n\n"
-        f"**Do you want to submit this data? (Reply 'yes' or 'no')**"
-    )
-    
-    # Trigger the human-in-the-loop interrupt with the updated message
+
+    print("DEBUG: payload created ->", payload)
+
+    # =================================================
+    # STEP 2: Human confirmation (HITL)
+    # =================================================
     decision = interrupt({
-        "type": "contact_form_approval",
-        "title": "Approve Project Submission",
-        "message": review_message,     # Streamlit will render this markdown perfectly
-        "pending_data": form_payload   # Keeps raw data accessible programmatically
+        "type": "contact_form_confirmation",
+        "message": f"""
+Please confirm your submission:
+
+Name: {name}
+Company: {company}
+Email: {email}
+Service: {interest}
+Budget: {project_budget}
+
+Reply YES to confirm or NO to cancel.
+""",
+        "data": payload
     })
-    
-    # Handle the human approval decision safely
-    if isinstance(decision, str) and decision.lower().strip() == "yes":
+
+    decision = str(decision).strip().lower() if decision else "no"
+
+    print("DEBUG: user decision ->", decision)
+
+    if decision != "yes":
         return {
-            "status": "success",
-            "message": f"Project inquiry lead for {name} ({company}) submitted successfully.",
-            "data": form_payload
+            "status": "cancelled",
+            "delivered": False,
+            "message": "Submission cancelled by user.",
+            "data": payload
         }
-    else:
-        # =======================================================================
-        # CHANGE APPLIED HERE:
-        # Raising a descriptive error breaks the LLM out of its optimistic "happy path" 
-        # and forcefully commands it to pivot to cancellation handling.
-        # =======================================================================
+
+    # =================================================
+    # STEP 3: API CALL
+    # =================================================
+    try:
+        response = requests.post(
+            "https://www.groooh.com/api/contactmail",
+            json=payload,
+            timeout=10
+        )
+
+        print("DEBUG: API status ->", response.status_code)
+
+        if response.status_code == 200:
+                return {
+                    "status": "success",
+                    "delivered": True,
+                    "message": "Your inquiry was successfully submitted.",
+                    "data": payload
+                }
+
         return {
-            "status": "user_cancelled_submission",
-            "message": (
-                f"SUBMISSION HALTED: The user  explicitly replied 'NO' or cancelled during the review step. "
-                f"Do NOT submit any form data. Do NOT tell the user that their details were sent or that anyone will reach out. "
-                f"Acknowledge the cancellation clearly and ask how they would like to proceed or modify the information."
-            ),
-            "data": None
+            "status": "failed",
+            "delivered": False,
+            "message": "Submission failed due to server error. Nothing was sent.",
+            "error": response.text,
+            "status_code": response.status_code
+        }
+
+    except Exception as e:
+        print("DEBUG: API error ->", str(e))
+
+        return {
+            "status": "failed",
+            "delivered": False,
+            "message": "Submission failed due to network error. Nothing was sent.",
+            "error": str(e)
         }
