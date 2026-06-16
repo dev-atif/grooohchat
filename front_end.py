@@ -61,10 +61,11 @@ def stream_response(config, user_input=None, is_resume=False):
             if box is None:
                 box = st.chat_message("assistant", avatar="logofavicon.png").empty()
 
-            box.markdown(
-                f'<div class="assistant-red-box">{full_text}</div>',
-                unsafe_allow_html=True,
-            )
+            # box.markdown(
+            #     f'<div class="assistant-red-box">{full_text}</div>',
+            #     unsafe_allow_html=True,
+            # )
+            box.markdown(full_text)
 
     return full_text
 
@@ -162,10 +163,11 @@ for msg in history:
     elif isinstance(msg, (AIMessage, AIMessageChunk)):
         if msg.content:
             with st.chat_message("assistant", avatar="logofavicon.png"):
-                st.markdown(
-                    f'<div class="assistant-red-box">{msg.content}</div>',
-                    unsafe_allow_html=True
-                )
+                # st.markdown(
+                #     f'<div class="assistant-red-box">{msg.content}</div>',
+                #     unsafe_allow_html=True
+                # )
+                st.markdown(msg.content)
 
 # =====================================================
 # QUICK ACTIONS (NO RERUN HERE)

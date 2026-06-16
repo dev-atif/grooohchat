@@ -172,3 +172,9 @@ div[data-testid="stChatInput"] button {
     background-color: rgb(0, 0, 0);
     
 }
+div[data-testid="stChatMessage"]:has([aria-label="Chat message from assistant"]) div[data-testid="stChatMessageContent"] {
+    background-color: #E3FF00 !important;
+    border: none !important;
+    padding: 15px !important;
+    border-radius: 25px;
+}
